@@ -4,8 +4,8 @@ y = nil
 
 # 高さの入力を求める
 # 入力された値が整数でなければもう一度入力を求める
+print '高さを教えて下さい=>'
 loop do
-  print '高さを教えて下さい=>'
   input = gets.chomp
   if input =~ /^[0-9]+$/
     y = input.to_i
@@ -17,8 +17,8 @@ end
 
 # 幅の入力を求める
 # 入力された値が整数でなければもう一度入力を求める
+print '幅を教えて下さい=>'
 loop do
-  print '幅を教えて下さい=>'
   input = gets.chomp
   if input =~ /^[0-9]+$/
     x = input.to_i
