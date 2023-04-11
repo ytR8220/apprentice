@@ -1,4 +1,4 @@
-# fizzbuzzをプログラムの作成
+# fizzbuzzプログラムの作成
 def fizz_buzz(num)
   if num % 15 == 0
     puts 'FIzz Buzz'
