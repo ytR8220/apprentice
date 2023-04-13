@@ -170,7 +170,7 @@ class VendingMachine
 
   # 商品を選ぶ
   def press_button(item)
-    defined?(item.cup) ? item.cup <= @cup && item.price <= @deposit ? (@cup -= item.cup; @deposit -= item.price; item.buy) : "" :
+    defined?(item.cup) ? 0 < @cup && item.price <= @deposit ? (@cup -= 1; @deposit -= item.price; item.buy) : "" :
     item.price <= @deposit ? (@deposit -= item.price; item.buy) : ""
   end
 
@@ -213,7 +213,7 @@ class Hot < Product
   def initialize(item)
     @item = item
     @price = 150
-    @cup = 1
+    @cup = true
   end
 end
 
