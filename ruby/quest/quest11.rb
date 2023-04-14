@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # オブジェクト指向を使う
 # クラスの定義
 # class VendingMachine
@@ -23,15 +25,14 @@
 # vending_machine = VendingMachine.new('サントリー')
 # puts vending_machine.press_manufacturer_name
 
-
 ###########################################################
 # メソッドの可視性
 # class VendingMachine
-  
+
 #   def deposit_coin(coin)
 #     coin == 100 ? @deposit += coin : ""
 #   end
-  
+
 #   def press_button
 #     if @deposit >= 100
 #       @deposit -= 100
@@ -103,7 +104,6 @@
 # puts vending_machine.press_button(cola)
 # puts vending_machine.press_button(cola)
 
-
 ###########################################################
 # 継承
 # class VendingMachine
@@ -122,11 +122,11 @@
 #       item.buy
 #     end
 #   end
-  
+
 #   def add_cup(num)
 #     @cup += num
 #   end
-  
+
 #   private
 #   def initialize(name)
 #     @name = name
@@ -157,7 +157,6 @@
 
 # 自動販売機クラス
 class VendingMachine
-
   # コインの投入
   def deposit_coin(coin)
     @deposit += coin
@@ -170,12 +169,22 @@ class VendingMachine
 
   # 商品を選ぶ
   def press_button(item)
-    defined?(item.cup) ? 0 < @cup && item.price <= @deposit ? (@cup -= 1; @deposit -= item.price; item.buy) : "" :
-    item.price <= @deposit ? (@deposit -= item.price; item.buy) : ""
+    # defined?(item.cup) ? 0 < @cup && item.price <= @deposit ? (@cup -= 1; @deposit -= item.price; item.buy) : "" :
+    # item.price <= @deposit ? (@deposit -= item.price; item.buy) : ""
+    if defined?(item.cup)
+      if @cup.positive? && @deposit >= item.price
+        @cup -= 1
+        @deposit -= item.price
+        item.buy
+      end
+    elsif @deposit >= item.price
+      @deposit -= item.price
+      item.buy
+    end
   end
 
-
   private
+
   def initialize(name)
     @name = name
     @deposit = 0
@@ -191,7 +200,7 @@ class Product
     @item = item
     @price = 150
   end
-  
+
   def buy
     "#{@item}が出てきました"
   end
@@ -199,9 +208,8 @@ end
 
 # コールドドリンククラス
 class Cold < Product
-
   def initialize(item)
-    @item = item
+    super(item)
     @price = 100
   end
 end
@@ -209,10 +217,9 @@ end
 # ホットドリンククラス
 class Hot < Product
   attr_reader :cup
-  
+
   def initialize(item)
-    @item = item
-    @price = 150
+    super(item)
     @cup = true
   end
 end
@@ -220,11 +227,10 @@ end
 # スナック菓子クラス
 class Snack < Product
   def initialize(item)
-    @item = item
+    super(item)
     @price = 130
   end
 end
-
 
 cold_drink = Cold.new('cola')
 hot_drink = Hot.new('tea')
