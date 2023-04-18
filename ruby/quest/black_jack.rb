@@ -81,7 +81,7 @@ module Sum
     else
       n = '10'
     end
-    @total = total + n.to_i
+    @total += n.to_i
   end
 end
 
@@ -221,7 +221,6 @@ member.times do |n|
   name = gets.chomp
   st = !name.empty? ? name : 'あなた'
   @player << st
-  # !name.empty? ? @player << name : @player << 'あなた'
 end
 
 # ゲーム準備
