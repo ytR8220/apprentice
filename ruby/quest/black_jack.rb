@@ -40,7 +40,7 @@ class Player < Participant
     puts "#{name}の現在の手札は「#{hand_card.join('、')}」で、点数は「#{total(hand_point)}点」です。"
     puts 'ブラックジャック！' if hand_card.size == 2 && total(hand_point) == 21
     if total(hand_point) < 21
-      prompt.select('カードを引きますか？', %w[引く 引かない])
+      prompt.select('カードを引きますか？', %w[引かない 引く])
     elsif total(hand_point) > 21
       puts 'バースト！'
     else
@@ -121,20 +121,16 @@ mark = %w[スペード ダイヤ ハート クラブ]
 @deck = Card.create_cards(mark).shuffle!
 
 # プレイ人数の確認
+prompt = TTY::Prompt.new
 @player_set = []
-puts 'プレイヤーの人数を教えて下さい。'
-puts '1.1人'
-puts '2.2人'
-puts '3.3人'
-member = gets.chomp.to_i
+member = prompt.select('プレイヤーの人数を教えて下さい。', %w[1 2 3]).to_i
 if member > 1
-  print 'あなが以外のメンバーをCPUにしますか？ (y/n)'
-  cpu = gets
+  cpu = prompt.select('あなが以外のメンバーをCPUにしますか？', %w[はい いいえ])
   case cpu
-  when /^[yY]/
+  when 'はい'
     bot = true
     @cpu_set = []
-  when /^[nN]/
+  when 'いいえ'
     bot = false
   end
 end
@@ -147,23 +143,18 @@ member.times do |n|
 end
 
 hand = Hand.new
-p hand
-# プレイヤーインスタンスの生成
 @player = Player.create_player(@player_set, hand)
-# cpuインスタンスの生成
 @cpu = Cpu.create_cpu(@cpu_set, hand) unless @cpu_set.nil?
-p @cpu
-# ディーラーインスタンスの生成
 @dealer = Dealer.new('ディーラー', hand)
 
 game = Game.new
 game.start
 
 # ディーラーがプレイヤーにカードを配る
-@player.size.times do |n|
+@player.each do |p|
   2.times do
-    @player[n].hand << @dealer.distribute(@deck)
-    puts "#{@player[n].name}に配られたカードは#{@player[n].hand[-1].keys[0]}です。"
+    p.hand << @dealer.distribute(@deck)
+    puts "#{p.name}に配られたカードは#{p.hand[-1].keys[0]}です。"
   end
 end
 
