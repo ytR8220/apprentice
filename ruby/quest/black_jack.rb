@@ -21,7 +21,7 @@ class Participant
     total
   end
 
-  def choice(hand_card, hand_point)
+  def judge(hand_card, hand_point)
     puts "#{name}の現在の手札は「#{hand_card.join('、')}」で、点数は「#{total(hand_point)}点」です。"
     puts 'ブラックジャック！' if hand_card.size == 2 && total(hand_point) == 21
     puts 'バースト！' if total(hand_point) > 21
@@ -35,7 +35,7 @@ class Player < Participant
     player_set.map { |name| Player.new(name, hand) }
   end
 
-  def choice(hand_card, hand_point)
+  def judge(hand_card, hand_point)
     prompt = TTY::Prompt.new
     puts "#{name}の現在の手札は「#{hand_card.join('、')}」で、点数は「#{total(hand_point)}点」です。"
     puts 'ブラックジャック！' if hand_card.size == 2 && total(hand_point) == 21
@@ -58,15 +58,42 @@ end
 
 # ディーラークラス
 class Dealer < Participant
-  def distribute(deck)
-    deck.pop
+  def distribute_double(player, deck)
+    player.each do |p|
+      2.times do
+        p.hand << deck.pop
+        puts "#{p.name}に配られたカードは#{p.hand[-1].keys[0]}です。"
+      end
+    end
+  end
+
+  def distribute(player, deck)
+    player.hand << deck.pop
+    puts "#{player.name}に配られたカードは#{player.hand[-1].keys[0]}です。"
+  end
+
+  def draw_double(dealer, deck)
+    2.times do |i|
+      dealer.hand << deck.pop
+      if i.zero?
+        puts "#{dealer.name}の1枚目のカードは#{dealer.hand[0].keys[0]}です。"
+      else
+        puts "#{dealer.name}の2枚目のカードはわかりません。"
+      end
+    end
+  end
+
+  def draw(dealer, deck)
+    dealer.hand << deck.pop
+    puts "#{dealer.name}が引いたカードは#{dealer.hand[-1].keys[0]}です。"
   end
 end
 
 # カードクラス
 class Card
-  def self.create_cards(mark)
+  def create_cards
     cards = []
+    mark = %w[スペード ダイヤ ハート クラブ]
     mark.each do |n|
       cards << { "#{n}のA": 11 }
       2.upto(10) { |i| cards << { "#{n}の#{i}": i } }
@@ -78,12 +105,67 @@ class Card
   end
 end
 
+# デッキクラス
+class Deck
+  def create_deck(cards)
+    cards.shuffle!
+  end
+end
+
 # 手札クラス
 class Hand
   attr_reader :hand
 
   def initialize
     @hand = []
+  end
+end
+
+# 準備クラス
+class Preparation
+  def create_cards
+    Card.new.create_cards
+  end
+
+  def create_deck(cards)
+    Deck.new.create_deck(cards)
+  end
+
+  def player_number
+    prompt = TTY::Prompt.new
+    @player_num = prompt.select('プレイヤーの人数を教えて下さい。', %w[1 2 3]).to_i
+    @cpu_num = 0 if @player_num < 2
+    @player_num
+  end
+
+  def cpu_number
+    prompt = TTY::Prompt.new
+    cpu = prompt.select('あなが以外のメンバーをCPUにしますか？', %w[はい いいえ])
+    case cpu
+    when 'はい'
+      @cpu_num = @player_num - 1
+      @player_num - 1
+    when 'いいえ'
+      @cpu_num = 0
+      @player_num
+    end
+  end
+
+  def player_decide
+    num = @player_num - @cpu_num
+    player_set = []
+    if num.zero?
+      player_set << 'あなた'
+    else
+      num.times { |n| player_set << (n.zero? ? 'あなた' : "PLAYER#{n}") }
+    end
+    player_set
+  end
+
+  def cpu_decide
+    cpu_set = []
+    @cpu_num.times { |n| cpu_set << "CPU#{n + 1}" }
+    cpu_set
   end
 end
 
@@ -116,31 +198,14 @@ class Game
   end
 end
 
-# デッキの構築
-mark = %w[スペード ダイヤ ハート クラブ]
-@deck = Card.create_cards(mark).shuffle!
-
-# プレイ人数の確認
-prompt = TTY::Prompt.new
-@player_set = []
-member = prompt.select('プレイヤーの人数を教えて下さい。', %w[1 2 3]).to_i
-if member > 1
-  cpu = prompt.select('あなが以外のメンバーをCPUにしますか？', %w[はい いいえ])
-  case cpu
-  when 'はい'
-    bot = true
-    @cpu_set = []
-  when 'いいえ'
-    bot = false
-  end
-end
-member.times do |n|
-  if bot
-    n.zero? ? @player_set << 'あなた' : @cpu_set << "CPU#{n}"
-  else
-    @player_set << (n.zero? ? 'あなた' : "PLAYER#{n}")
-  end
-end
+# 準備を始める
+preparation = Preparation.new
+@cards = preparation.create_cards
+@deck = preparation.create_deck(@cards)
+@player_num = preparation.player_number
+@cpu_num = @player_num > 1 ? preparation.cpu_number : 0
+@player_set = preparation.player_decide
+@cpu_set = preparation.cpu_decide if @cpu_num.positive?
 
 hand = Hand.new
 @player = Player.create_player(@player_set, hand)
@@ -151,30 +216,13 @@ game = Game.new
 game.start
 
 # ディーラーがプレイヤーにカードを配る
-@player.each do |p|
-  2.times do
-    p.hand << @dealer.distribute(@deck)
-    puts "#{p.name}に配られたカードは#{p.hand[-1].keys[0]}です。"
-  end
-end
+@dealer.distribute_double(@player, @deck)
 
 # CPUがいればディーラーはCPUにカードを配る
-@cpu&.each do |c|
-  2.times do
-    c.hand << @dealer.distribute(@deck)
-    puts "#{c.name}に配られたカードは#{c.hand[-1].keys[0]}です。"
-  end
-end
+@dealer.distribute_double(@cpu, @deck) if @cpu.instance_of?(Array)
 
 # ディーラーが自分自身にカードを配る
-2.times do |i|
-  @dealer.hand << @dealer.distribute(@deck)
-  if i.zero?
-    puts "ディーラーの1枚目のカードは#{@dealer.hand[0].keys[0]}です。"
-  else
-    puts 'ディーラーの2枚目のカードはわかりません。'
-  end
-end
+@dealer.draw_double(@dealer, @deck)
 
 @result = []
 # プレイヤーのターン
@@ -185,13 +233,12 @@ end
     hand_card << p.hand[i].keys[0]
     hand_point << p.hand[i].values[0]
   end
-  choice = p.choice(hand_card, hand_point)
-  while choice == '引く'
-    p.hand << @dealer.distribute(@deck)
-    puts "#{p.name}に配られたカードは#{p.hand[-1].keys[0]}です。"
+  judge = p.judge(hand_card, hand_point)
+  while judge == '引く'
+    @dealer.distribute(p, @deck)
     hand_card << p.hand[-1].keys[0]
     hand_point << p.hand[-1].values[0]
-    choice = p.choice(hand_card, hand_point)
+    judge = p.judge(hand_card, hand_point)
   end
   if p.total(hand_point) > 21 && @player.size == 1 && @cpu.nil?
     puts 'ディーラーの勝ち'
@@ -209,43 +256,37 @@ end
     hand_card << c.hand[i].keys[0]
     hand_point << c.hand[i].values[0]
   end
-  total = c.choice(hand_card, hand_point)
+  total = c.judge(hand_card, hand_point)
   while total < 18
-    c.hand << @dealer.distribute(@deck)
-    puts "#{c.name}に配られたカードは#{c.hand[-1].keys[0]}です。"
+    @dealer.distribute(c, @deck)
     hand_card << c.hand[-1].keys[0]
     hand_point << c.hand[-1].values[0]
-    total = c.choice(hand_card, hand_point)
+    total = c.judge(hand_card, hand_point)
   end
   @result << { c.name => c.total(hand_point) } if c.total(hand_point) <= 21
 end
 
 if @result.empty?
-  puts 'ディーラーの勝ち'
+  puts "#{@dealer.name}の勝ち"
   exit
 end
 
 # ディーラーのターン
-puts "ディーラーの2枚目のカードは#{@dealer.hand[-1].keys[0]}でした。"
+puts "#{@dealer.name}の2枚目のカードは#{@dealer.hand[-1].keys[0]}でした。"
 hand_card = []
 hand_point = []
 @dealer.hand.size.times do |i|
   hand_card << @dealer.hand[i].keys[0]
   hand_point << @dealer.hand[i].values[0]
 end
-total = @dealer.choice(hand_card, hand_point)
+total = @dealer.judge(hand_card, hand_point)
 while total < 17
-  @dealer.hand << @dealer.distribute(@deck)
-  puts "ディーラーが引いたカードは#{@dealer.hand[-1].keys[0]}です。"
+  @dealer.draw(@dealer, @deck)
   hand_card << @dealer.hand[-1].keys[0]
   hand_point << @dealer.hand[-1].values[0]
-  total = @dealer.choice(hand_card, hand_point)
+  total = @dealer.judge(hand_card, hand_point)
 end
-@dealer_result = if @dealer.total(hand_point) <= 21
-                   @dealer.total(hand_point)
-                 else
-                   0
-                 end
+@dealer_result = @dealer.total(hand_point) <= 21 ? @dealer.total(hand_point) : 0
 
 # 勝敗を決める
 @winner = game.duel(@result, @dealer_result)
