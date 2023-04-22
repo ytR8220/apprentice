@@ -10,7 +10,6 @@ require_relative 'cpu'
 require_relative 'dealer'
 require 'tty-prompt'
 
-
 # 準備を始める
 preparation = Preparation.new
 @cards = preparation.create_cards
