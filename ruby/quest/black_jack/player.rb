@@ -16,8 +16,6 @@ class Player < Participant
       prompt.select('カードを引きますか？', %w[引かない 引く])
     elsif total > 21
       puts 'バースト！'
-    else
-      total
     end
   end
 end

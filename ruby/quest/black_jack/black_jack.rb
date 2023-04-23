@@ -92,7 +92,6 @@ while total < 17
   total = @dealer.choice(hand_card, hand_point)
 end
 
-# 勝敗を決める
 @judge = Judge.new(@dealer.hand.score)
 @judge.judge(@player)
 @judge.judge(@cpu)
