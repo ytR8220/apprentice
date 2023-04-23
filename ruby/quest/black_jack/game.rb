@@ -6,7 +6,7 @@ class Game
     puts 'ブラックジャックを開始します。'
   end
 
-  def duel(result, dealer_result)
+  def judge(result, dealer_result)
     winner = ['ディーラー']
     result.each do |hand|
       if hand.values[0] > dealer_result
