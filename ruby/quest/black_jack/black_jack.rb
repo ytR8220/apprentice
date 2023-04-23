@@ -25,16 +25,7 @@ preparation = Preparation.new
 @dealer = Dealer.new('ディーラー', Hand.new)
 
 game = Game.new
-game.start
-
-# ディーラーがプレイヤーにカードを配る
-@dealer.distribute_double(@player, @deck)
-
-# CPUがいればディーラーはCPUにカードを配る
-@dealer.distribute_double(@cpu, @deck) if @cpu.instance_of?(Array)
-
-# ディーラーが自分自身にカードを配る
-@dealer.draw_double(@dealer, @deck)
+game.start(@player, @cpu, @dealer, @deck)
 
 @result = []
 # プレイヤーのターン
@@ -54,11 +45,11 @@ game.start
     total_score = p.hand.total(hand_point)
     choice = p.choice(hand_card, total_score)
   end
-  if p.hand.total(hand_point) > 21 && @player.size == 1 && @cpu.nil?
+  if total_score > 21 && @player.size == 1 && @cpu.nil?
     puts 'ディーラーの勝ち'
     exit
-  elsif p.hand.total(hand_point) <= 21
-    @result << { p.name => p.hand.total(hand_point) }
+  elsif total_score <= 21
+    @result << { p.name => total_score }
   end
 end
 
@@ -100,7 +91,6 @@ while total < 17
   hand_point << @dealer.hand.hand[-1].values[0]
   total = @dealer.choice(hand_card, hand_point)
 end
-@dealer_result = @dealer.hand.total(hand_point) <= 21 ? @dealer.hand.total(hand_point) : 0
 
 # 勝敗を決める
 @judge = Judge.new(@dealer.hand.score)

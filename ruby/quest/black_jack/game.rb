@@ -2,29 +2,13 @@
 
 # ゲームクラス
 class Game
-  def start
+  def start(player, cpu, dealer, deck)
     puts 'ブラックジャックを開始します。'
-  end
-
-  def judge(result, dealer_result)
-    winner = ['ディーラー']
-    result.each do |hand|
-      if hand.values[0] > dealer_result
-        winner.delete('ディーラー') if winner.include?('ディーラー')
-        winner << hand.keys[0]
-      elsif hand.values[0] == dealer_result
-        winner.delete('ディーラー') if winner.include?('ディーラー')
-      end
-    end
-    winner
-  end
-
-  def winner(winner)
-    if !winner.empty?
-      winner = winner.join('、')
-      puts "「#{winner}」の勝ち！"
-    else
-      puts '引き分け'
-    end
+    # ディーラーがプレイヤーにカードを配る
+    dealer.distribute_double(player, deck)
+    # CPUがいればディーラーはCPUにカードを配る
+    dealer.distribute_double(cpu, deck) if cpu.instance_of?(Array)
+    # ディーラーが自分自身にカードを配る
+    dealer.draw_double(dealer, deck)
   end
 end
