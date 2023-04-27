@@ -8,7 +8,7 @@ class Judge
 
   def result(challengers)
     challengers.each do |challenger|
-      challenger_score = challenger.total(challenger.hand) <= 21 ? challenger.total(challenger.hand) : 0
+      challenger_score = challenger.total_score <= 21 ? challenger.total_score : 0
       if challenger_score == @dealer_score
         puts "#{challenger.name}は引き分けです。"
       elsif challenger_score > @dealer_score

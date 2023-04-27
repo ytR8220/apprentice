@@ -13,11 +13,11 @@ class Cpu < Player
   end
 
   def auto_hit
-    puts 'ブラックジャック！' if @hand_score == 21 && @hand_card.size == 2
-    if @hand_score > 21
+    puts 'ブラックジャック！' if total_score == 21 && @hands_card.size == 2
+    if total_score > 21
       puts 'バースト！'
       0
     end
-    @hand_score < 17
+    total_score < 17
   end
 end

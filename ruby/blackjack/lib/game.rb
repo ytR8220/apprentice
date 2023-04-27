@@ -24,22 +24,22 @@ class Game
   def player_turn
     @player.each do |player|
       loop do
-        @total_score = player.show_hand
+        player.show_hand
         choose = player.choose
         choose == '引く' ? @dealer.hit_card(@deck, player) : break
       end
-      @burst_check << 'ok' if @total_score <= 21
+      @burst_check << 'ok' if player.total_score <= 21
     end
   end
 
   def cpu_turn
     @cpu.each do |cpu|
       loop do
-        @total_score = cpu.show_hand
+        cpu.show_hand
         hit = cpu.auto_hit
         hit ? @dealer.hit_card(@deck, cpu) : break
       end
-      @burst_check << 'ok' if @total_score <= 21
+      @burst_check << 'ok' if cpu.total_score <= 21
     end
   end
 
@@ -52,16 +52,16 @@ class Game
   end
 
   def dealer_turn
-    puts "#{@dealer.name}の2枚目のカードは#{@dealer.hand[-1].kind}でした。"
+    puts "#{@dealer.name}の2枚目のカードは#{@dealer.hands[-1].kind}でした。"
     loop do
-      @dealer_score = @dealer.show_hand
+      @dealer.show_hand
       hit = @dealer.auto_hit
       hit ? @dealer.hit_card(@deck) : break
     end
   end
 
   def judge
-    judge = Judge.new(@dealer_score)
+    judge = Judge.new(@dealer.total_score)
     judge.result(@player)
     judge.result(@cpu)
   end

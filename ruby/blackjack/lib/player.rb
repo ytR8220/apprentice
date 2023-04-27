@@ -2,11 +2,12 @@
 
 # プレイヤーの数を受け取り、その数のプレイヤーのインスタンスを生成できる。
 class Player
-  attr_reader :name, :hand
+  attr_reader :name, :hands, :total_score
 
   def initialize(name)
     @name = name
-    @hand = []
+    @hands = []
+    @total_score = 0
   end
 
   def self.create_player(player_num)
@@ -18,28 +19,29 @@ class Player
   end
 
   def show_hand
-    @hand_card = []
-    hand.each { |hand| @hand_card << hand.kind }
-    @hand_score = total(hand)
-    puts "#{name}の手札は「#{@hand_card.join('、')}」で、合計点は#{@hand_score}点です。"
-    @hand_score
+    @hands_card = []
+    @hands.each { |hand| @hands_card << hand.kind }
+    @total_score = total
+    puts "#{name}の手札は「#{@hands_card.join('、')}」で、合計点は「#{@total_score}点」です。"
   end
 
   def choose
     prompt = TTY::Prompt.new
-    puts 'ブラックジャック！' if @hand_score == 21 && @hand_card.size == 2
-    if @hand_score > 21
+    puts 'ブラックジャック！' if @total_score == 21 && @hands_card.size == 2
+    if @total_score > 21
       puts 'バースト！'
       0
-    elsif @hand_score < 21
+    elsif @total_score < 21
       prompt.select('カードを引きますか？', %w[引かない 引く])
     end
   end
 
-  def total(hands)
+  private
+
+  def total
     score = 0
     hand_point = []
-    hands.each do |hand|
+    @hands.each do |hand|
       hand_point << hand.point.to_i
     end
     hand_point.sort.map do |n|

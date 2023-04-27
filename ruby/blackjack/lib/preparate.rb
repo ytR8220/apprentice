@@ -13,7 +13,8 @@ class Preparate
   def initialize
     prompt = TTY::Prompt.new
     @member = prompt.select('何人で遊びますか？', %w[1 2 3]).to_i
-    @player_num = @member > 1 ? prompt.select('プレイヤーの人数を教えて下さい。', %w[1 2 3]).to_i : 1
+    max_player = @member > 1 ? @member : 1
+    @player_num = @member > 1 ? prompt.select('プレイヤーの人数を教えて下さい。', (1..max_player).to_a).to_i : 1
   end
 
   def player_set
