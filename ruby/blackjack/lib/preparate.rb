@@ -28,7 +28,7 @@ class Preparate
     Dealer.new('ディーラー')
   end
 
-  def deck_create
+  def create_deack
     Deck.new
   end
 end

@@ -17,16 +17,17 @@ class Player
     player
   end
 
-  def show_hand(hands)
-    hand_card = []
-    hands.each { |hand| hand_card << hand.kind }
-    @hand_score = total(hands)
-    puts "#{name}の手札は「#{hand_card.join('、')}」で、合計点は#{@hand_score}点です。"
+  def show_hand
+    @hand_card = []
+    hand.each { |hand| @hand_card << hand.kind }
+    @hand_score = total(hand)
+    puts "#{name}の手札は「#{@hand_card.join('、')}」で、合計点は#{@hand_score}点です。"
+    @hand_score
   end
 
-  def choose(hands)
+  def choose
     prompt = TTY::Prompt.new
-    puts 'ブラックジャック！' if @hand_score == 21 && hands.size == 2
+    puts 'ブラックジャック！' if @hand_score == 21 && @hand_card.size == 2
     if @hand_score > 21
       puts 'バースト！'
       0

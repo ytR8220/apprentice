@@ -12,8 +12,8 @@ class Cpu < Player
     cpu
   end
 
-  def auto_hit(hands)
-    puts 'ブラックジャック！' if @hand_score == 21 && hands.size == 2
+  def auto_hit
+    puts 'ブラックジャック！' if @hand_score == 21 && @hand_card.size == 2
     if @hand_score > 21
       puts 'バースト！'
       0
