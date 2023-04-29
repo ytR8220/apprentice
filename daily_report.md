@@ -2,32 +2,37 @@
 
 ## 本日の目標（TODO 目標/できるようになりたいこと）
 
-- Linux の Quest をどの環境で行うか決める（Docker、AWS、UTM）
+- 提出 Quest 以外の Linux の Quest を全て完了する
 
 ## 学習時間(total)
 
-- 5h(100h)
+- 6h(106h)
 
 ## 目標振り返り（TODO 進捗/できるようになりたいこと振り返り）
 
-- Linux の Quest は Docker で進めることに決定。
-  理由 →① 現場の開発でよく使われていそうだから。② 今後の Quest やオリジナルプロダクト開発に使えそうだから。③ 学ぶうちに楽しくなってきたから
+- 提出 Quest 以外の Linux の Quest 全て完了
+- Dockerfile でログインユーザーを指定してイメージファイルを作成してコンテナを起動すると、root ユーザーのパスワードが入力できずにコマンドのインストール等が行えない。
+  かと言って、ユーザーを指定しなければコンテナに入る度にルートユーザーから一般ユーザーに切り替える必要があり面倒。きっと糸口はあるのでこれを解消したい。
 
 ## 詰まっていること（実現したいこと/現状/行ったこと/仮説）
 
-- 特になし
+- Dockerfile でログインユーザーを指定してイメージファイルを作成してコンテナを起動すると、root ユーザーのパスワードが入力できずにコマンドのインストール等が行えない。
 
 ## 学んだこと（新しい気付き、学び）
 
-- dockerfile からイメージを作成（docker build -t [name]:[tag] path）し、コンテナを起動(docker run --name [name] -it [name]:[tag])することに成功
-- 停止中のコンテナを開始(docker start [name])
-- コンテナを停止(docker stop [name])
-- 起動中のコンテナにインタラクティブモードで入る(docker exec -it [name] /bin/bash)
+- ローカルファイルとコンテナのファイルを同期(docker run -it --name mylinux -v "/Users/yuto.t/desktop/linux:/home/yuto/linux" rockylinux:9.1)
+  ※コンテナ作成時にしか指定できない
+- 検索コマンド(sample.txt ファイルから「a」から始まる文字列を検索) -> $grep '<a' sample.txt
+- 検索コマンド(sample.txt ファイルから「a」で終わる文字列を検索) -> $grep 'a\b' sample.txt
+- 検索コマンド(sample.txt ファイルから「a」が含まれる文字列を検索) -> $grep 'a' sample.txt
+- ユーザーが入力したデータを変数に入れる -> read -p "What's your name?" name
+- Quest11 の最後の演習を、if、for、while、seq コマンドを使って実装してみた
 
 ## 感想（一日の感想、雑談）
 
-- Docker が楽しくなってきた！明日は Linux の Quest を進めながら、Docker 内のファイルとローカル上のファイルを同期させてみたい。
+- 昨日からだが、Linux よりも Docker の使い方を学ぶ方に時間をかけてしまった。だけど Docker も今後使っていきたいので一石二鳥だと思ってしっかり学びたい。
+- 家庭があるので意外と平日より土日の方が時間確保しづらい事がある。家族の理解も得ながら進めていきたい。
 
 ## 明日の目標（TODO 目標/できるようになりたいこと）
 
-- 提出 Quest 以外の Linux の Quest を全て完了する
+- 提出 Quest の完了
