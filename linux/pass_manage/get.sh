@@ -1,7 +1,7 @@
 while true; do
   read -p "サービス名を入力してください:" service
   if [ -n "$service" ]; then
-    search=$(grep $service data.txt)
+    search=$(grep  "\<$service\>" data.txt)
     if [ $? = 0 ]; then
       user=$(echo $search | awk -F':' '{ print $2 }')
       pass=$(echo $search | awk -F':' '{ print $3 }')
