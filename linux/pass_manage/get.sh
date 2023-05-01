@@ -1,3 +1,4 @@
+openssl enc -d -aes-256-cbc -base64 -pbkdf2 -pass pass:123456 -in enc-data.txt -out data.txt
 while true; do
   read -p "サービス名を入力してください:" service
   if [ -n "$service" ]; then
@@ -8,12 +9,16 @@ while true; do
       echo "サービス名:$service"
       echo "ユーザー名:$user"
       echo "パスワード:$pass"
+      openssl enc -e -aes-256-cbc -base64 -pbkdf2 -pass pass:123456 -in data.txt -out enc-data.txt
+      rm data.txt
       break
     else
       echo "そのサービスは登録されていません。"
       read -p "サービスの登録を行いますか？(y / n)" register
       case $register in
         "y")
+        openssl enc -e -aes-256-cbc -base64 -pbkdf2 -pass pass:123456 -in data.txt -out enc-data.txt
+        rm data.txt
         ./add.sh
         break
         ;;
@@ -26,6 +31,8 @@ while true; do
     read -p "前のページに戻りますか？(y / n)" choose
     case $choose in
       "y")
+        openssl enc -e -aes-256-cbc -base64 -pbkdf2 -pass pass:123456 -in data.txt -out enc-data.txt
+        rm data.txt
         break
         ;;
       *)
@@ -34,4 +41,3 @@ while true; do
     esac
   fi
 done
-
