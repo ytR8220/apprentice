@@ -49,12 +49,6 @@
 |チャンネル ID|INT|NOT|PRIMARY KEY|||
 |チャンネル名|VARCHAR(20)|NOT|INDEX, UNIQUE|||
 
-【放送番組】
-|カラム名|データ型|NULL|制約|初期値|AUTO INCREMENT|
-| ---- | ---- | ---- | ---- | ---- | ---- |
-|チャンネル ID|INT|NOT|PRIMARY KEY,FOREIGN KEY【チャンネル】|||
-|番組 ID|INT|NOT|PRIMARY KEY,FOREIGN KEY 【番組】|||
-
 【番組】
 |カラム名|データ型|NULL|制約|初期値|AUTO INCREMENT|
 | ---- | ---- | ---- | ---- | ---- | ---- |
@@ -67,7 +61,7 @@
 |カラム名|データ型|NULL|制約|初期値|AUTO INCREMENT|
 | ---- | ---- | ---- | ---- | ---- | ---- |
 |エピソード ID|INT|NOT|PRIMARY KEY||YES|
-|エピソード名|VARCHAR(20)|NOT|UNIQUE,INDEX|||
+|エピソード名|VARCHAR(20)|NOT|INDEX|||
 |エピソード詳細|VARCHAR(100)|NOT||||
 |公開日|DATE|NOT||||
 |視聴数|BIGINT|NOT||0|
@@ -89,8 +83,8 @@
 【番組表】
 |カラム名|データ型|NULL|制約|初期値|AUTO INCREMENT|
 | ---- | ---- | ---- | ---- | ---- | ---- |
-|チャンネル ID|INT|NOT|PRIMARY KEY,FOREIGN KEY|||
+|チャンネル ID|INT|NOT|PRIMARY KEY,FOREIGN KEY【チャンネル ID】|||
 |開始日時|DATETIME|NOT|PRIMARY KEY|||
 |終了日時|DATETIME|NOT||||
-|番組 ID|INT|NOT|FOREIGN KEY 【番組】|||
+|番組 ID|INT|NOT|PRIMARY KEY,FOREIGN KEY 【番組】|||
 |エピソード ID|INT|NOT|FOREIGN KEY 【エピソード】|0||
