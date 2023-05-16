@@ -16,13 +16,13 @@ SELECT program_name, seASon_name, episode_number, episode_name, views_count FROM
 
 ```sql
 SELECT channel_name, start_time, end_time, seASon_name, episode_number, episode_name, episode_description FROM episode AS ep INNER JOIN program_table AS pt ON ep.episode_id
-= pt.episode_id INNER JOIN channel AS ch ON pt.channel_id = ch.channel_id INNER JOIN seASon AS s ON ep.seASon_id = s.seASon_id where date(start_time) = '2023-05-16';
+= pt.episode_id INNER JOIN channel AS ch ON pt.channel_id = ch.channel_id INNER JOIN seASon AS s ON ep.seASon_id = s.seASon_id WHERE DATE(start_time) = '2023-05-16';
 ```
 
 ## 4.ドラマというチャンネルがあったとして、ドラマのチャンネルの番組表を表示するために、本日から一週間分、何日の何時から何の番組が放送されるのかを知りたいです。ドラマのチャンネルに対して、放送開始時刻、放送終了時刻、シーズン数、エピソード数、エピソードタイトル、エピソード詳細を本日から一週間分取得してください
 
 ```sql
-SELECT start_time, end_time, seASon_name, episode_number, episode_name, episode_description FROM program_table AS pt INNER JOIN episode AS ep ON pt.episode_id = ep.episode_id INNER JOIN seASon AS s ON ep.seASon_id = s.seASon_id INNER JOIN channel AS ch ON pt.channel_id = ch.channel_id where channel_name = 'チャンネル1' and date(start_time) >= curdate() and date(start_time) < CURDATE() + INTERVAL 1 WEEK;
+SELECT start_time, end_time, seASon_name, episode_number, episode_name, episode_description FROM program_table AS pt INNER JOIN episode AS ep ON pt.episode_id = ep.episode_id INNER JOIN seASon AS s ON ep.seASon_id = s.seASon_id INNER JOIN channel AS ch ON pt.channel_id = ch.channel_id WHERE channel_name = 'チャンネル1' AND DATE(start_time) >= curdate() AND DATE(start_time) < CURDATE() + INTERVAL 1 WEEK;
 ```
 
 ## 5.直近一週間で最も見られた番組が知りたいです。直近一週間に放送された番組の中で、エピソード視聴数合計トップ 2 の番組に対して、番組タイトル、視聴数を取得してください
