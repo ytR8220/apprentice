@@ -28,11 +28,11 @@ SELECT start_time, end_time, seASon_name, episode_number, episode_name, episode_
 ## 5.直近一週間で最も見られた番組が知りたいです。直近一週間に放送された番組の中で、エピソード視聴数合計トップ 2 の番組に対して、番組タイトル、視聴数を取得してください
 
 ```sql
-SELECT title, count FROM
+SELECT program_name, sum(views_count) FROM program_table AS pt INNER JOIN episode AS ep ON pt.episode_id = ep.episode_id INNER JOIN program AS p ON ep.program_id = p.program_id WHERE DATE(start_time) BETWEEN CURDATE() - INTERVAL 1 WEEK AND CURDATE() GROUP BY program_name ORDER BY sum(views_count) DESC LIMIT 2;
 ```
 
 ## 6.ジャンルごとの番組の視聴数ランキングを知りたいです。番組の視聴数ランキングはエピソードの平均視聴数ランキングとします。ジャンルごとに視聴数トップの番組に対して、ジャンル名、番組タイトル、エピソード平均視聴数を取得してください。
 
 ```sql
-SELECT genre_name, title, AVG(count) FROM
+SELECT genre_Name, program_Name, avg_Views FROM (SELECT Genre_Name, Program_Name, Avg_Views, RANK() OVER (PARTITION BY Genre_Name ORDER BY Avg_Views DESC) as ranking FROM (SELECT g.Genre_Name, p.Program_Name, AVG(pt.Views_Count) AS Avg_Views FROM Program p JOIN Episode e ON p.Program_ID = e.Program_ID JOIN Program_table pt ON e.Episode_ID = pt.Episode_ID JOIN Genre g ON p.Genre_ID = g.Genre_ID GROUP BY p.Program_ID, g.Genre_Name, p.Program_Name) AS SubQuery) AS T WHERE ranking = 1;
 ```
