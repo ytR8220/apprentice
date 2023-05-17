@@ -34,5 +34,5 @@ SELECT program_name, sum(views_count) FROM program_table AS pt INNER JOIN episod
 ## 6.ジャンルごとの番組の視聴数ランキングを知りたいです。番組の視聴数ランキングはエピソードの平均視聴数ランキングとします。ジャンルごとに視聴数トップの番組に対して、ジャンル名、番組タイトル、エピソード平均視聴数を取得してください。
 
 ```sql
-SELECT genre_Name, program_Name, avg_Views FROM (SELECT Genre_Name, Program_Name, Avg_Views, RANK() OVER (PARTITION BY Genre_Name ORDER BY Avg_Views DESC) as ranking FROM (SELECT g.Genre_Name, p.Program_Name, AVG(pt.Views_Count) AS Avg_Views FROM Program p JOIN Episode e ON p.Program_ID = e.Program_ID JOIN Program_table pt ON e.Episode_ID = pt.Episode_ID JOIN Genre g ON p.Genre_ID = g.Genre_ID GROUP BY p.Program_ID, g.Genre_Name, p.Program_Name) AS SubQuery) AS T WHERE ranking = 1;
+SELECT genre_Name, program_Name, avg_Views FROM (SELECT Genre_Name, Program_Name, Avg_Views, RANK() OVER (PARTITION BY Genre_Name ORDER BY Avg_Views DESC) as ranking FROM (SELECT g.Genre_Name, p.Program_Name, AVG(pt.Views_Count) AS Avg_Views FROM Program p INNER JOIN Episode e ON p.Program_ID = e.Program_ID INNER JOIN Program_table pt ON e.Episode_ID = pt.Episode_ID INNER JOIN Genre g ON p.Genre_ID = g.Genre_ID GROUP BY p.Program_ID, g.Genre_Name, p.Program_Name) AS SubQuery) AS T WHERE ranking = 1;
 ```
