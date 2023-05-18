@@ -39,55 +39,6 @@ ENV MYSQL_ROOT_PASSWORD=root
 ENV MYSQL_DATABASE=internet_tv
 ```
 
-- FROM mysql:8.0.33
-
-  - mysql:8.0.33 をベースイメージとして使用する
-  - つまり、mysql のバージョン 8.0.33 を使用するということ
-
-- RUN microdnf install yum
-
-  - microdnf を使用して yum をインストールする
-  - microdnf は、yum の軽量版
-
-- yum install -y glibc-langpack-ja glibc-locale-source git
-
-  - glibc-langpack-ja、glibc-locale-source、git をインストールする
-  - glibc-langpack-ja は、日本語ロケールをインストールするために必要
-  - glibc-locale-source は、日本語ロケールをインストールするために必要
-  - git は、git をインストールするために必要
-
-- localedef -f UTF-8 -i ja_JP ja_JP.UTF-8
-
-  - ja_JP.UTF-8 のロケールを作成する
-  - これがないと日本語が文字化けする
-
-- ENV LC_ALL=ja_JP.UTF-8, ENV LANG=ja_JP.UTF-8
-
-  - 環境変数 LC_ALL に ja_JP.UTF-8 を設定する
-  - 環境変数 LANG に ja_JP.UTF-8 を設定する
-  - 両方ないと日本語が入力できなかったりする
-
-- COPY my.cnf /etc/mysql/conf.d
-
-  - my.cnf を/etc/mysql/conf.d にコピーする
-  - my.cnf は、mysql の設定ファイル
-  - /etc/mysql/conf.d は、mysql の設定ファイルを配置するディレクトリ
-
-- COPY create-table.sql /docker-entrypoint-initdb.d
-
-  - create-table.sql を/docker-entrypoint-initdb.d にコピーする
-  - create-table.sql は、テーブルを作成するための sql ファイル
-  - /docker-entrypoint-initdb.d は、コンテナ起動時に実行される sql ファイルを配置するディレクトリ
-
-- ENV MYSQL_ROOT_PASSWORD=root
-
-  - 環境変数 MYSQL_ROOT_PASSWORD に root を設定する
-  - root は、mysql の root ユーザのパスワード
-
-- ENV MYSQL_DATABASE=internet_tv
-  - 環境変数 MYSQL_DATABASE に internet_tv を設定する
-  - internet_tv は、データベース名
-
 </div></detail>
 
 <detail><summary>4. my.cnf を作成</summary>
