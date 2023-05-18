@@ -39,47 +39,46 @@ ENV MYSQL_ROOT_PASSWORD=root
 ENV MYSQL_DATABASE=internet_tv
 ```
 
-<details><summary>FROM mysql:8.0.33</summary><div>
-mysql:8.0.33をベースイメージとして使用する
-つまり、mysqlのバージョン8.0.33を使用するということ
-</div></details>
-<details><summary>RUN microdnf install yum</summary><div>
-microdnfを使用してyumをインストールする
-microdnfは、yumの軽量版
-</div></details>
-<details><summary>yum install -y glibc-langpack-ja glibc-locale-source git</summary><div>
-glibc-langpack-ja、glibc-locale-source、gitをインストールする
-glibc-langpack-jaは、日本語ロケールをインストールするために必要
-glibc-locale-sourceは、日本語ロケールをインストールするために必要
-gitは、gitをインストールするために必要
-</div></details>
-<details><summary>localedef -f UTF-8 -i ja_JP ja_JP.UTF-8</summary><div>
-ja_JP.UTF-8のロケールを作成する
-これがないと日本語が文字化けする
-</div></details>
-<details><summary>ENV LC_ALL=ja_JP.UTF-8, ENV LANG=ja_JP.UTF-8</summary><div>
-環境変数LC_ALLにja_JP.UTF-8を設定する
-環境変数LANGにja_JP.UTF-8を設定する
-両方ないと日本語が入力できなかったりする
-</div></details>
-<details><summary>COPY my.cnf /etc/mysql/conf.d</summary><div>
-my.cnfを/etc/mysql/conf.dにコピーする
-my.cnfは、mysqlの設定ファイル
-/etc/mysql/conf.dは、mysqlの設定ファイルを配置するディレクトリ
-</div></details>
-<details><summary>COPY create-table.sql /docker-entrypoint-initdb.d</summary><div>
-create-table.sqlを/docker-entrypoint-initdb.dにコピーする
-create-table.sqlは、テーブルを作成するためのsqlファイル
-/docker-entrypoint-initdb.dは、コンテナ起動時に実行されるsqlファイルを配置するディレクトリ
-</div></details>
-<details><summary>ENV MYSQL_ROOT_PASSWORD=root</summary><div>
-環境変数MYSQL_ROOT_PASSWORDにrootを設定する
-rootは、mysqlのrootユーザのパスワード
-</div></details>
-<details><summary>ENV MYSQL_DATABASE=internet_tv</summary><div>
-環境変数MYSQL_DATABASEにinternet_tvを設定する
-internet_tvは、データベース名
-</div></details>
+- FROM mysql:8.0.33
+  mysql:8.0.33 をベースイメージとして使用する
+  つまり、mysql のバージョン 8.0.33 を使用するということ
+
+- RUN microdnf install yum
+  microdnf を使用して yum をインストールする
+  microdnf は、yum の軽量版
+
+- yum install -y glibc-langpack-ja glibc-locale-source git
+  glibc-langpack-ja、glibc-locale-source、git をインストールする
+  glibc-langpack-ja は、日本語ロケールをインストールするために必要
+  glibc-locale-source は、日本語ロケールをインストールするために必要
+  git は、git をインストールするために必要
+
+- localedef -f UTF-8 -i ja_JP ja_JP.UTF-8
+  ja_JP.UTF-8 のロケールを作成する
+  これがないと日本語が文字化けする
+
+- ENV LC_ALL=ja_JP.UTF-8, ENV LANG=ja_JP.UTF-8
+  環境変数 LC_ALL に ja_JP.UTF-8 を設定する
+  環境変数 LANG に ja_JP.UTF-8 を設定する
+  両方ないと日本語が入力できなかったりする
+
+- COPY my.cnf /etc/mysql/conf.d
+  my.cnf を/etc/mysql/conf.d にコピーする
+  my.cnf は、mysql の設定ファイル
+  /etc/mysql/conf.d は、mysql の設定ファイルを配置するディレクトリ
+
+- COPY create-table.sql /docker-entrypoint-initdb.d
+  create-table.sql を/docker-entrypoint-initdb.d にコピーする
+  create-table.sql は、テーブルを作成するための sql ファイル
+  /docker-entrypoint-initdb.d は、コンテナ起動時に実行される sql ファイルを配置するディレクトリ
+
+- ENV MYSQL_ROOT_PASSWORD=root
+  環境変数 MYSQL_ROOT_PASSWORD に root を設定する
+  root は、mysql の root ユーザのパスワード
+
+- ENV MYSQL_DATABASE=internet_tv
+  環境変数 MYSQL_DATABASE に internet_tv を設定する
+  internet_tv は、データベース名
 
 </div></details>
 
