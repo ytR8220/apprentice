@@ -1,5 +1,5 @@
 // API_KEY
-const apiKey = 'cde6cda9ffa1932943d5de6d39a56657';
+const apiKey = 'API_KEY';
 const btn = document.querySelector('button');
 const result = document.querySelector('#weatherResult');
 
