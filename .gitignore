@@ -1,3 +1,4 @@
+.gitignore
 free.rb
 test.rb
 black_jack_copy.rb
@@ -8,3 +9,4 @@ db
 my_lesson
 mosya
 rails/quest3
+rails/quest7
