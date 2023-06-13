@@ -1,13 +1,13 @@
-.gitignore
 free.rb
 test.rb
 black_jack_copy.rb
 black_jack_demo.rb
 freespace
 database_sql/data
-db
 my_lesson
 mosya
 rails/quest3
 rails/quest7
-realworld
+database_sql/internet_tv/db
+realworld/realworld_quest/.gitattributes
+realworld/realworld_quest/.gitignore
