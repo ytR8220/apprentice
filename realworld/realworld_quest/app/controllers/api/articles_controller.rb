@@ -7,42 +7,84 @@ class Api::ArticlesController < ApplicationController
   end
 
   def create
-    @article = Article.create(article_params)
+    @article = @user.articles.create(article_params)
     @article.slug = generate_slug(@article.title)
     if @article.valid?
-      render json: @article, status: :created
+      render json: {
+        article: {
+          slug: @article.slug,
+          title: @article.title,
+          description: @article.description,
+          body: @article.body,
+          createdAt: @article.created_at,
+          updatedAt: @article.updated_at,
+          author: {
+            username: @article.user.username,
+            bio: @article.user.bio,
+            image: @article.user.image,
+          }
+        }
+      }, status: :created
     else
       render json: {error: "Invalid article"}, status: :unprocessable_entity
     end
   end
 
   def show
-    @article = Article.find_by(slug: params[:slug])
+    @article = @user.articles.find_by(slug: params[:slug])
     if @article
-      render json: @article
+      render json: {
+        article: {
+          slug: @article.slug,
+          title: @article.title,
+          description: @article.description,
+          body: @article.body,
+          createdAt: @article.created_at,
+          updatedAt: @article.updated_at,
+          author: {
+            username: @article.user.username,
+            bio: @article.user.bio,
+            image: @article.user.image,
+          }
+        }
+      }
     else
       render json: {error: 'Article not found'}, status: :not_found
     end
   end
   
   def update
-    @article = Article.find_by(slug: params[:slug])
+    @article = @user.articles.find_by(slug: params[:slug])
     if @article.update(article_params)
-      render json: @article
+      render json: {
+        article: {
+          slug: @article.slug,
+          title: @article.title,
+          description: @article.description,
+          body: @article.body,
+          createdAt: @article.created_at,
+          updatedAt: @article.updated_at,
+          author: {
+            username: @article.user.username,
+            bio: @article.user.bio,
+            image: @article.user.image,
+          }
+        }
+      }
     else
       render json: {error: "Invalid article"}, status: :unprocessable_entity
     end
   end
   
   def destroy
-    @article = Article.find_by(slug: params[:slug])
+    @article = @user.articles.find_by(slug: params[:slug])
     @article.destroy
   end
 
   private
 
   def article_params
-    params.require(:article).permit(:title, :description, :body)
+    params.require(:article).permit(:title, :description, :body, :user_id)
   end
   
   def generate_slug(title)

@@ -1,6 +1,8 @@
 class Article < ApplicationRecord
   after_create :generate_slug
 
+  belongs_to :user
+
   private
 
   def generate_slug

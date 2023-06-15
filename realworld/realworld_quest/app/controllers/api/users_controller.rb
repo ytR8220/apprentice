@@ -11,7 +11,15 @@ class Api::UsersController < ApplicationController
     
     if @user.valid?
       token = encode_token({user_id: @user.id})
-      render json: {user: @user}, status: :ok
+      render json: { 
+        user: { 
+          email: @user.email, 
+          token: @token, 
+          username: @user.username, 
+          bio: @user.bio, 
+          image: @user.image
+        } 
+      }, status: :created
     else
       render json: {error: "Invalid username or password"}, status: :unprocessible_entity
     end
@@ -21,14 +29,44 @@ class Api::UsersController < ApplicationController
     @user = User.find_by(email: user_params[:email])
     if @user && @user.authenticate(user_params[:password])
       token = encode_token({user_id: @user.id})
-      render json: {user: @user, token: token}, status: :ok
+      render json: { 
+        user: { 
+          email: @user.email, 
+          token: token, 
+          username: @user.username, 
+          bio: @user.bio, 
+          image: @user.image
+        } 
+      }, status: :ok
     else
       render json: {error: "Invalid username or password"}, status: :unprocessible_entity
     end
   end
 
   def current
-    render json: {user: @user}, status: :ok
+    render json: { 
+      user: { 
+        email: @user.email, 
+        token: @token, 
+        username: @user.username, 
+        bio: @user.bio, 
+        image: @user.image
+      } 
+    }, status: :ok
+  end
+
+  def update
+    @user = User.find_by(id: params[:id])
+    @user.update(user_params)
+    render json: { 
+      user: { 
+        email: @user.email, 
+        token: @token, 
+        username: @user.username, 
+        bio: @user.bio, 
+        image: @user.image
+      } 
+    }, status: :ok
   end
 
   def destroy
@@ -38,7 +76,7 @@ class Api::UsersController < ApplicationController
   private
   
   def user_params
-    params.require(:user).permit(:username, :email, :password)
+    params.require(:user).permit(:username, :email, :password, :bio, :image)
   end
 
 end
