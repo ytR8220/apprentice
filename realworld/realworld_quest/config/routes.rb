@@ -1,9 +1,10 @@
 Rails.application.routes.draw do
 
   namespace :api do
-    resources :users, only: [:index, :create, :update, :destroy]
+    resources :users, only: [:index, :create, :destroy]
     post "users/login", to: "users#login"
     get "user", to: "users#current"
+    put "users", to: "users#update"
   end
   
   namespace :api do

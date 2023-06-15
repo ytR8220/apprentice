@@ -1,5 +1,5 @@
 class Api::UsersController < ApplicationController
-  before_action :authorize, only: [:index, :current, :destroy]
+  before_action :authorize, only: [:index, :current, :destroy, :update]
 
   def index
     @users = User.all
@@ -56,7 +56,7 @@ class Api::UsersController < ApplicationController
   end
 
   def update
-    @user = User.find_by(id: params[:id])
+    @user = User.find_by(email: user_params[:email])
     @user.update(user_params)
     render json: { 
       user: { 
